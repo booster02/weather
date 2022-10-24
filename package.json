@@ -1,7 +1,6 @@
 {
   "name": "weather",
   "version": "0.1.0",
-  "homepage": "https://booster02.github.io/weather",
   "private": false,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.5",
@@ -23,7 +22,8 @@
     "test": "react-scripts test",
     "eject": "react-scripts eject",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "PUBLIC_URL=https://booster02.github.io/weather gh-pages -d build"
+
   },
   "eslintConfig": {
     "extends": [
