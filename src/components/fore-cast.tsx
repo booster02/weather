@@ -1,5 +1,5 @@
 import {PreviewCard} from "./preview-card";
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import {previewData} from "../utils/previews/hourPreviews";
 
 
@@ -23,6 +23,7 @@ export const ForeCast: React.FC<nextHoursProps> = ({
                                                        headline
                                                    }) => {
     const [cards, setCards] = useState(previewData);
+    const containerRef = useRef<HTMLDivElement>(null);
     useEffect(() => {
         setCards(previewData)
     }, [previewData])
@@ -47,22 +48,42 @@ export const ForeCast: React.FC<nextHoursProps> = ({
     } : () => {
     }
 
+    function scrollCards(direction: Directions) {
+        if (!containerRef.current) return
+        const left = direction === Directions.back ? -270 : 270;
+        containerRef.current.scrollBy({
+            left: left,
+            behavior: 'smooth'
+        });
+    }
+
     if (!previewData || !cards) {
-        return null
+        return null;
     }
     return (
         <>
             <h2>{headline}</h2>
             <div
+                ref={containerRef}
                 className={castType === CastType.HOURLY ? "nextHours" : castType === CastType.FULLDAY ? "fullDay" : "nextDays"}>
                 {
                     cards.map((data, index) => <PreviewCard key={`nextDays ${index}`} degree={data.weatherData.degree}
                                                             time={data.weatherData.time}
-                                                            status={data.weatherData.status} index={index} onClick={onClick}
+                                                            status={data.weatherData.status} index={index}
+                                                            onClick={onClick}
                                                             clicked={data.clicked}/>
                     )
                 }
             </div>
+            <div className="arrows">
+                <button className="backward" onClick={() => scrollCards(Directions.back)}>back</button>
+                <button className="forward" onClick={() => scrollCards(Directions.forward)}>forward</button>
+            </div>
         </>
     );
+}
+
+enum Directions {
+    back,
+    forward
 }

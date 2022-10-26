@@ -78,14 +78,13 @@ function App() {
     }
 
     getDayFromDate(new Date(Date.now()))
-    if (!allData) return <div className="loader"/>
+    if (!allData) return <div className="loader-wrapper"><div className="loader"/></div>
     return (<div className="app screen-overlay"
                  style={{backgroundImage: getBackgroundUrl(allData.hourly.weathercode[allData.hourly.time.indexOf(roundTime(currentTime))])}}>
         <MainPart currentTime={currentTime} getWeatherStatus={getWeatherStatus} hourly={allData.hourly}
-                  getIconURL={getIconURL} city={currentCity}/>
-        <h2 className="cityHeadline">Change your city</h2>
+                  getIconURL={getIconURL}/>
         <LocationBar setLocationInput={setInputCity} cities={locations} setCurrentCoords={setCoords}
-                     setCity={setCurrentCity}/>
+                     setCity={setCurrentCity} currentCity={currentCity}/>
         <ForeCast castType={CastType.HOURLY} previewData={getHourPreviews(allData.hourly)}
                   changePreviewIndex={changePreviewIndex} headline="Rest des Tages"/>
         <ForeCast castType={CastType.DAILY} previewData={previewDataWeek ? previewDataWeek.previewData : null}
