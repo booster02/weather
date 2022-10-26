@@ -48,9 +48,17 @@ export const ForeCast: React.FC<nextHoursProps> = ({
     } : () => {
     }
 
+    enum Directions {
+        BACK,
+        FORWARD
+    }
+
     function scrollCards(direction: Directions) {
         if (!containerRef.current) return
-        const left = direction === Directions.back ? -270 : 270;
+        let left = direction === Directions.BACK ? -312: 312;
+        if (castType === CastType.DAILY) {
+            left = direction === Directions.BACK ? -162: 162;
+        }
         containerRef.current.scrollBy({
             left: left,
             behavior: 'smooth'
@@ -60,6 +68,7 @@ export const ForeCast: React.FC<nextHoursProps> = ({
     if (!previewData || !cards) {
         return null;
     }
+
     return (
         <>
             <h2>{headline}</h2>
@@ -75,15 +84,11 @@ export const ForeCast: React.FC<nextHoursProps> = ({
                     )
                 }
             </div>
-            <div className="arrows">
-                <button className="backward" onClick={() => scrollCards(Directions.back)}>back</button>
-                <button className="forward" onClick={() => scrollCards(Directions.forward)}>forward</button>
-            </div>
+
+                <div className="arrows">
+                    <img width="10px" height="10px" alt="arrow left" src="./assets/icons/leftArrow.svg" className="navButton backward" onClick={() => scrollCards(Directions.BACK)}/>
+                    <img width="10px" height="10px" alt="arrow right" src="./assets/icons/rightArrow.svg" className="navButton forward" onClick={() => scrollCards(Directions.FORWARD)} />
+                </div>
         </>
     );
-}
-
-enum Directions {
-    back,
-    forward
 }

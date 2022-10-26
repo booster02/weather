@@ -64,7 +64,7 @@ function App() {
     function getBackgroundUrl(code: number) {
         let weatherType = getWeatherType(code)
         weatherType = weatherType === WeatherType.FREEZING_RAIN ? WeatherType.RAIN : weatherType;
-        let url = `url(./assets/backgrounds/${weatherType}.png)`;
+        let url = `url(./assets/backgrounds/${weatherType}.webp)`;
         return url;
     }
 
