@@ -86,8 +86,8 @@ export const ForeCast: React.FC<nextHoursProps> = ({
             </div>
 
                 <div className="arrows">
-                    <img width="10px" height="10px" alt="arrow left" src="./assets/icons/leftArrow.svg" className="navButton backward" onClick={() => scrollCards(Directions.BACK)}/>
-                    <img width="10px" height="10px" alt="arrow right" src="./assets/icons/rightArrow.svg" className="navButton forward" onClick={() => scrollCards(Directions.FORWARD)} />
+                    <img width="15px" height="15px" alt="arrow left" src="./assets/icons/leftArrow.svg" className="navButton backward" onClick={() => scrollCards(Directions.BACK)}/>
+                    <img width="15px" height="15px" alt="arrow right" src="./assets/icons/rightArrow.svg" className="navButton forward" onClick={() => scrollCards(Directions.FORWARD)} />
                 </div>
         </>
     );
