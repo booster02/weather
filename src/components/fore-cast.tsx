@@ -2,7 +2,6 @@ import {PreviewCard} from "./preview-card";
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {previewData} from "../utils/previews/hourPreviews";
 
-
 interface nextHoursProps {
     previewData: previewData[] | null;
     castType: CastType;
@@ -11,34 +10,26 @@ interface nextHoursProps {
 }
 
 export enum CastType {
-    HOURLY = "hourly",
-    DAILY = "daily",
-    FULLDAY = "fullday"
+    HOURLY = "hourly", DAILY = "daily", FULLDAY = "fullday",
 }
 
 export const ForeCast: React.FC<nextHoursProps> = ({
-                                                       castType,
-                                                       previewData,
-                                                       changePreviewIndex,
-                                                       headline
+                                                       castType, previewData, changePreviewIndex, headline,
                                                    }) => {
     const [cards, setCards] = useState(previewData);
-    // const containerRef = useCallback((node: HTMLDivElement)  => {
-    //     if (node !== null){
-    //         setIsScrollable(node.scrollWidth > node.clientWidth)
-    //     }
-    // }, []);
-    const containerRef = useRef<HTMLDivElement>(null);
-    const [isScrollable, setIsScrollable] = useState(true);
+    const containerRef = useRef<HTMLDivElement | null>(null);
+
+    const isScrollable = useCallback(() => {
+        if (!containerRef?.current) return false;
+        return containerRef.current.scrollWidth > containerRef.current.clientWidth;
+    }, [containerRef]);
+
     useEffect(() => {
-        setCards(previewData)
-        if (!containerRef?.current) return;
-        console.log(containerRef.current.scrollWidth, containerRef.current.clientWidth);
-        setIsScrollable(containerRef.current.scrollWidth > containerRef.current.clientWidth)
-    }, [previewData])
+        setCards(previewData);
+    }, [previewData]);
 
     const onClick = castType === CastType.DAILY && cards ? (index: number) => {
-        let newCards = [...cards]
+        let newCards = [...cards];
         let unclick = false;
         newCards = newCards.map((card, i) => {
             if (index === i && card.clicked) {
@@ -49,29 +40,27 @@ export const ForeCast: React.FC<nextHoursProps> = ({
                 card.clicked = index === i;
             }
             return card;
-        })
+        });
         if (unclick) return;
         setCards(newCards);
         const day = "2022-" + cards[index].weatherData.time.substring(3, 5) + "-" + cards[index].weatherData.time.substring(0, 2) + "T00:00";
         changePreviewIndex(day);
     } : () => {
-    }
+    };
 
     enum Directions {
-        BACK,
-        FORWARD
+        BACK, FORWARD,
     }
 
     function scrollCards(direction: Directions) {
-        if (!containerRef?.current) return
-        let left = direction === Directions.BACK ? -312: 312;
+        if (!containerRef?.current) return;
+        let left = direction === Directions.BACK ? -312 : 312;
         if (castType === CastType.DAILY) {
-            left = direction === Directions.BACK ? -162: 162;
+            left = direction === Directions.BACK ? -162 : 162;
         }
-        console.log(containerRef);
         containerRef.current.scrollBy({
             left: left,
-            behavior: 'smooth'
+            behavior: "smooth",
         });
     }
 
@@ -79,28 +68,29 @@ export const ForeCast: React.FC<nextHoursProps> = ({
         return null;
     }
 
-    let arrows = isScrollable?
-        <div className="arrows">
-            <img width="15px" height="15px" alt="arrow left" src="./assets/icons/leftArrow.svg" className="navButton backward" onClick={() => scrollCards(Directions.BACK)}/>
-            <img width="15px" height="15px" alt="arrow right" src="./assets/icons/rightArrow.svg" className="navButton forward" onClick={() => scrollCards(Directions.FORWARD)} />
-        </div>: null;
+    let arrows = isScrollable() ? (<div className="arrows">
+            <img width="15px" height="15px" alt="arrow left" src="./assets/icons/leftArrow.svg" className="navButton backward"
+                onClick={() => scrollCards(Directions.BACK)} />
+            <img width="15px" height="15px" alt="arrow right" src="./assets/icons/rightArrow.svg" className="navButton forward"
+                 onClick={() => scrollCards(Directions.FORWARD)} />
+        </div>) : null;
 
-    return (
-        <>
+    return (<>
             <h2>{headline}</h2>
             <div
                 ref={containerRef}
-                className={castType === CastType.HOURLY ? "nextHours" : castType === CastType.FULLDAY ? "fullDay" : "nextDays"}>
-                {
-                    cards.map((data, index) => <PreviewCard key={`nextDays ${index}`} degree={data.weatherData.degree}
-                                                            time={data.weatherData.time}
-                                                            status={data.weatherData.status} index={index}
-                                                            onClick={onClick}
-                                                            clicked={data.clicked}/>
-                    )
-                }
+                className={castType === CastType.HOURLY ? "nextHours" : castType === CastType.FULLDAY ? "fullDay" : "nextDays"}
+            >
+                {cards.map((data, index) => (<PreviewCard
+                        key={`nextDays ${index}`}
+                        degree={data.weatherData.degree}
+                        time={data.weatherData.time}
+                        status={data.weatherData.status}
+                        index={index}
+                        onClick={onClick}
+                        clicked={data.clicked}
+                    />))}
             </div>
             {arrows}
-        </>
-    );
-}
+        </>);
+};

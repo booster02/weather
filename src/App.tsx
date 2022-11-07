@@ -25,7 +25,7 @@ function App() {
     const [previewDataDay, setPreviewDataDay] = useState<previewsData | null>(null);
     const [previewDataWeek, setPreviewDataWeek] = useState<previewsData | null>();
     const currentTime = currentTimeExact.substring(0, 16);
-    const [currentCoords, setCoords] = useLocation(null);
+    const [currentCoords, setCoords] = useLocation(["52.520008", "13.404954"]);
     const [currentCity, setCurrentCity] = useState<string | null>(null);
     const url = currentCoords && `https://api.open-meteo.com/v1/forecast?latitude=${currentCoords[0]}&longitude=${currentCoords[1]}&hourly=temperature_2m,weathercode&daily=temperature_2m_max,temperature_2m_min,apparent_temperature_max,apparent_temperature_min,precipitation_sum,rain_sum,showers_sum,snowfall_sum,windspeed_10m_max,windgusts_10m_max,winddirection_10m_dominant&timezone=Europe%2FBerlin`;
     const [inputCity, setInputCity] = useState("");
