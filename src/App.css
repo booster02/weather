@@ -118,7 +118,7 @@ h1, h2, h3 {
     width: 80vw;
     max-width: 546px;
     height: 80px;
-    overflow: auto;
+    overflow: hidden;
     scroll-snap-type: x mandatory;
     cursor: move;
 }
@@ -133,7 +133,6 @@ h1, h2, h3 {
     opacity: 0.8;
 }
 .nextHours::-webkit-scrollbar, .nextDays::-webkit-scrollbar, .fullDay::-webkit-scrollbar {
-    height: 0;
 }
 
 .previewCard {

@@ -89,11 +89,9 @@ function App() {
     </div>
     const timeIndex = allData.hourly.time.indexOf(roundTime(currentTime));
     const backgroundUrl = getBackgroundUrl(allData.hourly.weathercode[timeIndex]);
-    console.log(backgroundUrl)
     const backgroundGradient = getBackgroundLayover(allData.hourly.weathercode[timeIndex]);
     const backgroundColorArray = backgroundGradient.split(" ");
     const backgroundColor = backgroundColorArray[backgroundColorArray.length-1].slice(0, -1);
-    console.log(backgroundColor);
 
     return (<div className="app "
                  style={{backgroundImage: backgroundUrl}}>

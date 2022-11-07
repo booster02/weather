@@ -23,17 +23,19 @@ export const ForeCast: React.FC<nextHoursProps> = ({
                                                        headline
                                                    }) => {
     const [cards, setCards] = useState(previewData);
-    const containerRef = useCallback((node: HTMLDivElement)  => {
-        if (node !== null){
-            setIsScrollable(node.scrollWidth > node.clientWidth)
-        }
-    }, []);
-    const [isScrollable, setIsScrollable] = useState(false);
+    // const containerRef = useCallback((node: HTMLDivElement)  => {
+    //     if (node !== null){
+    //         setIsScrollable(node.scrollWidth > node.clientWidth)
+    //     }
+    // }, []);
+    const containerRef = useRef<HTMLDivElement>(null);
+    const [isScrollable, setIsScrollable] = useState(true);
     useEffect(() => {
         setCards(previewData)
+        if (!containerRef?.current) return;
+        console.log(containerRef.current.scrollWidth, containerRef.current.clientWidth);
+        setIsScrollable(containerRef.current.scrollWidth > containerRef.current.clientWidth)
     }, [previewData])
-
-    //      setIsScrollable((containerRef.current.scrollWidth > containerRef.current.clientWidth));
 
     const onClick = castType === CastType.DAILY && cards ? (index: number) => {
         let newCards = [...cards]
@@ -61,12 +63,13 @@ export const ForeCast: React.FC<nextHoursProps> = ({
     }
 
     function scrollCards(direction: Directions) {
-        if (!containerRef) return
+        if (!containerRef?.current) return
         let left = direction === Directions.BACK ? -312: 312;
         if (castType === CastType.DAILY) {
             left = direction === Directions.BACK ? -162: 162;
         }
-        containerRef.caller().scrollBy({
+        console.log(containerRef);
+        containerRef.current.scrollBy({
             left: left,
             behavior: 'smooth'
         });
