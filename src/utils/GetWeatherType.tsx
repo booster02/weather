@@ -49,6 +49,26 @@ export function getWeatherType(code: number) {
     }
 }
 
+export function getBackgroundGradient(type: WeatherType) {
+    switch (type){
+        case WeatherType.SUN:
+            return "linear-gradient(rgba(154,219,254,0), rgba(154,219,254,0.9))";
+        case WeatherType.CLOUDY:
+            return "linear-gradient(rgba(135,206,250,0), rgba(135,206,250,0.9))";
+        case WeatherType.MIST:
+            return "linear-gradient(rgba(59,62,57,0), rgba(59,62,57,0.9))"
+        case WeatherType.FREEZING_RAIN:
+        case WeatherType.RAIN:
+            return "linear-gradient(rgba(41,129,156,0), rgba(41,129,156,0.9))"
+        case WeatherType.SNOW:
+            return "linear-gradient(rgba(224,246,250,0), rgba(224,246,250,0.9))"
+        case WeatherType.STORM:
+            return "linear-gradient(rgba(47,34,70,0), rgba(47,34,70,0.9))"
+        case WeatherType.NONE:
+            return "";
+    }
+}
+
 export enum WeatherStatus{
     KLAR = "Klar",
     BEWOELKT = "Bewölkt",

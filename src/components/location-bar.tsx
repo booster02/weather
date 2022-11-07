@@ -56,7 +56,10 @@ export const LocationBar: React.FC<LocationBarProps> = ({
             id, name, country, admin1, admin3
         })
     })
-    return (<>
+    function selectAll(event: React.MouseEvent<HTMLInputElement>) {
+        event.currentTarget.select();
+    }
+    return (<div className="searchOption">
         <datalist id="cities">
             {options.map((city) => {
                 const admin1 = city.admin1 ? ", " + city.admin1 : "";
@@ -67,8 +70,8 @@ export const LocationBar: React.FC<LocationBarProps> = ({
             })}
         </datalist>
         <input className="citySearch" name="citySearch" placeholder="Deine Stadt" onChange={onChange}
-               list="cities" onKeyDown={onKeyDown} type="text" defaultValue={currentCity || ""}/>
-    </>)
+               list="cities" onKeyDown={onKeyDown} onClick={(event) => selectAll(event)} type="text" defaultValue={currentCity || ""}/>
+    </div>)
 }
 
 interface cityOption {

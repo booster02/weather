@@ -1,5 +1,5 @@
 import {PreviewCard} from "./preview-card";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {previewData} from "../utils/previews/hourPreviews";
 
 
@@ -23,10 +23,17 @@ export const ForeCast: React.FC<nextHoursProps> = ({
                                                        headline
                                                    }) => {
     const [cards, setCards] = useState(previewData);
-    const containerRef = useRef<HTMLDivElement>(null);
+    const containerRef = useCallback((node: HTMLDivElement)  => {
+        if (node !== null){
+            setIsScrollable(node.scrollWidth > node.clientWidth)
+        }
+    }, []);
+    const [isScrollable, setIsScrollable] = useState(false);
     useEffect(() => {
         setCards(previewData)
     }, [previewData])
+
+    //      setIsScrollable((containerRef.current.scrollWidth > containerRef.current.clientWidth));
 
     const onClick = castType === CastType.DAILY && cards ? (index: number) => {
         let newCards = [...cards]
@@ -54,12 +61,12 @@ export const ForeCast: React.FC<nextHoursProps> = ({
     }
 
     function scrollCards(direction: Directions) {
-        if (!containerRef.current) return
+        if (!containerRef) return
         let left = direction === Directions.BACK ? -312: 312;
         if (castType === CastType.DAILY) {
             left = direction === Directions.BACK ? -162: 162;
         }
-        containerRef.current.scrollBy({
+        containerRef.caller().scrollBy({
             left: left,
             behavior: 'smooth'
         });
@@ -68,6 +75,12 @@ export const ForeCast: React.FC<nextHoursProps> = ({
     if (!previewData || !cards) {
         return null;
     }
+
+    let arrows = isScrollable?
+        <div className="arrows">
+            <img width="15px" height="15px" alt="arrow left" src="./assets/icons/leftArrow.svg" className="navButton backward" onClick={() => scrollCards(Directions.BACK)}/>
+            <img width="15px" height="15px" alt="arrow right" src="./assets/icons/rightArrow.svg" className="navButton forward" onClick={() => scrollCards(Directions.FORWARD)} />
+        </div>: null;
 
     return (
         <>
@@ -84,11 +97,7 @@ export const ForeCast: React.FC<nextHoursProps> = ({
                     )
                 }
             </div>
-
-                <div className="arrows">
-                    <img width="15px" height="15px" alt="arrow left" src="./assets/icons/leftArrow.svg" className="navButton backward" onClick={() => scrollCards(Directions.BACK)}/>
-                    <img width="15px" height="15px" alt="arrow right" src="./assets/icons/rightArrow.svg" className="navButton forward" onClick={() => scrollCards(Directions.FORWARD)} />
-                </div>
+            {arrows}
         </>
     );
 }

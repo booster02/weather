@@ -5,7 +5,7 @@ import {MainPart} from "./components/main-part";
 import {CastType, ForeCast} from "./components/fore-cast";
 import {useFetch, useFetchLocation} from "./utils/Hooks/useFetch";
 import useLocation from "./utils/Hooks/useLocation";
-import {getWeatherStatus, getWeatherType, WeatherType} from "./utils/GetWeatherType";
+import {getBackgroundGradient, getWeatherStatus, getWeatherType, WeatherType} from "./utils/GetWeatherType";
 import {useInterval} from "./utils/Hooks/useInterval"
 import {timeZoneOffset} from "./utils/constant";
 import {addHours} from "./utils/time/addHours";
@@ -64,8 +64,14 @@ function App() {
     function getBackgroundUrl(code: number) {
         let weatherType = getWeatherType(code)
         weatherType = weatherType === WeatherType.FREEZING_RAIN ? WeatherType.RAIN : weatherType;
-        let url = `url(./assets/backgrounds/${weatherType}.webp)`;
-        return url;
+        return `url(./assets/backgrounds/${weatherType}.webp)`;
+        //return `url(./assets/backgrounds/stormy.webp)`;
+    }
+
+    function getBackgroundLayover(code: number) {
+        let weatherType = getWeatherType(code);
+        return getBackgroundGradient(weatherType);
+        //return getBackgroundGradient(WeatherType.MIST);
     }
 
     function roundTime(currentTime: string) {
@@ -78,19 +84,40 @@ function App() {
     }
 
     getDayFromDate(new Date(Date.now()))
-    if (!allData) return <div className="loader-wrapper"><div className="loader"/></div>
-    return (<div className="app screen-overlay"
-                 style={{backgroundImage: getBackgroundUrl(allData.hourly.weathercode[allData.hourly.time.indexOf(roundTime(currentTime))])}}>
-        <MainPart currentTime={currentTime} getWeatherStatus={getWeatherStatus} hourly={allData.hourly}
-                  getIconURL={getIconURL}/>
-        <LocationBar setLocationInput={setInputCity} cities={locations} setCurrentCoords={setCoords}
-                     setCity={setCurrentCity} currentCity={currentCity}/>
-        <ForeCast castType={CastType.HOURLY} previewData={getHourPreviews(allData.hourly)}
-                  changePreviewIndex={changePreviewIndex} headline="Rest des Tages"/>
-        <ForeCast castType={CastType.DAILY} previewData={previewDataWeek ? previewDataWeek.previewData : null}
-                  changePreviewIndex={changePreviewIndex} headline={previewDataWeek ? previewDataWeek.headline : ""}/>
-        <ForeCast previewData={previewDataDay ? previewDataDay.previewData : null} castType={CastType.FULLDAY}
-                  changePreviewIndex={changePreviewIndex} headline={previewDataDay ? previewDataDay.headline : ""}/>
+    if (!allData) return <div className="loader-wrapper">
+        <div className="loader"/>
+    </div>
+    const timeIndex = allData.hourly.time.indexOf(roundTime(currentTime));
+    const backgroundUrl = getBackgroundUrl(allData.hourly.weathercode[timeIndex]);
+    console.log(backgroundUrl)
+    const backgroundGradient = getBackgroundLayover(allData.hourly.weathercode[timeIndex]);
+    const backgroundColorArray = backgroundGradient.split(" ");
+    const backgroundColor = backgroundColorArray[backgroundColorArray.length-1].slice(0, -1);
+    console.log(backgroundColor);
+
+    return (<div className="app "
+                 style={{backgroundImage: backgroundUrl}}>
+        <div className="firstHalf">
+            <MainPart currentTime={currentTime} getWeatherStatus={getWeatherStatus} hourly={allData.hourly}
+                      getIconURL={getIconURL}/>
+        </div>
+        <div style={{backgroundImage: backgroundGradient}}>
+            <LocationBar setLocationInput={setInputCity} cities={locations} setCurrentCoords={setCoords}
+                         setCity={setCurrentCity} currentCity={currentCity}/>
+        </div>
+        <div className="secondHalf"
+             style={{backgroundColor: backgroundColor}}>
+            <ForeCast key="1" castType={CastType.HOURLY} previewData={getHourPreviews(allData.hourly)}
+                      changePreviewIndex={changePreviewIndex} headline="Rest des Tages"/>
+            <ForeCast key="2" castType={CastType.DAILY}
+                      previewData={previewDataWeek ? previewDataWeek.previewData : null}
+                      changePreviewIndex={changePreviewIndex}
+                      headline={previewDataWeek ? previewDataWeek.headline : ""}/>
+            <ForeCast key="3" previewData={previewDataDay ? previewDataDay.previewData : null}
+                      castType={CastType.FULLDAY}
+                      changePreviewIndex={changePreviewIndex} headline={previewDataDay ? previewDataDay.headline : ""}/>
+            <footer className="footer">All icons created by asianson.design</footer>
+        </div>
     </div>);
 }
 
